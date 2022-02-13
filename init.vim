@@ -61,8 +61,8 @@ let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 " === Status/command bar
 " ===
 set laststatus=2
-set showcmd
 set noshowmode
+set showcmd
 " set formatoptions-=tc
 
 " Show command autocomplete
@@ -105,6 +105,9 @@ inoremap <C-l> <C-u>
 " Insert Key
 noremap k i
 noremap K I
+
+" Copy to system clipboard
+vnoremap Y "+y
 
 " ===
 " === Cursor Movement
@@ -194,6 +197,10 @@ Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
 Plug 'jparise/vim-graphql'
 Plug 'pangloss/vim-javascript'
+Plug 'xianzhon/vim-code-runner'
+Plug 'Chiel92/vim-autoformat'
+Plug 'tpope/vim-surround' " type yskw' to wrap the word with '' or type cs'` to change 'word' to `word` S for visual mode
+Plug 'tpope/vim-repeat'
 
 call plug#end()
 
@@ -221,6 +228,7 @@ else
 endif
 " coc plugins
 let g:coc_global_extensions = [
+      \ 'coc-clangd',
       \ 'coc-css',
       \ 'coc-html',
       \ 'coc-json',
@@ -242,7 +250,22 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-inoremap <silent><expr> <c-space> coc#refresh()
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" coc-yank
+nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
+" coc-explorer
+" you need install nerd fonts for show the icon
+nmap tt <Cmd>CocCommand explorer<CR>
 
 " typescript-vim vim-jsx-typescript
 " set filetypes as typescriptreact
@@ -283,3 +306,10 @@ autocmd BufNewFile,BufRead *.prisma setfiletype graphql
 let g:javascript_plugin_jsdoc = 1
 let g:javascript_plugin_ngdoc = 1
 " let g:javascript_plugin_flow = 1
+
+" vim-code-runner
+nmap <silent><leader>r <plug>CodeRunner
+
+" vim autoformat
+let g:python3_host_prog="/Users/eyebrow/.pyenv/shims/python3"
+noremap <F3> :Autoformat<CR>
