@@ -173,6 +173,8 @@ map <right> :vertical resize+5<CR>
 " ===
 " === Tab management
 " ===
+" change curruent window to new tab
+map te <C-w>T
 " Create a new tab with tu
 map tu :tabe<CR>
 " Move around tabs with tn and ti
