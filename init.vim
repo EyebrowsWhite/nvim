@@ -188,19 +188,16 @@ call plug#begin()
 
 Plug 'EdenEast/nightfox.nvim'
 Plug 'itchyny/lightline.vim'
+Plug 'mg979/vim-xtabline'
+Plug 'liuchengxu/vista.vim'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'github/copilot.vim'
-Plug 'leafgarland/typescript-vim'
-Plug 'peitalin/vim-jsx-typescript'
-Plug 'jparise/vim-graphql'
-Plug 'pangloss/vim-javascript'
-Plug 'xianzhon/vim-code-runner'
 Plug 'Chiel92/vim-autoformat'
-Plug 'tpope/vim-surround' " type yskw' to wrap the word with '' or type cs'` to change 'word' to `word` S for visual mode
-Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 call plug#end()
 
@@ -209,6 +206,36 @@ if !has('gui_running')
   set t_Co=256
 endif
 colorscheme nightfox
+
+" xtabline
+
+" lightline and vista
+noremap <LEADER>v :Vista!!<CR>
+noremap <c-t> :silent! Vista finder coc<CR>
+let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+let g:vista_default_executive = 'coc'
+let g:vista_fzf_preview = ['right:50%']
+let g:vista#renderer#enable_icon = 1
+let g:vista#renderer#icons = {
+\   "function": "\uf794",
+\   "variable": "\uf71b",
+\  }
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
+set statusline+=%{NearestMethodOrFunction()}
+autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
+
+let g:lightline = {
+      \ 'colorscheme': 'powerline',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'readonly', 'filename', 'modified', 'method' ] ]
+      \ },
+      \ 'component_function': {
+      \   'method': 'NearestMethodOrFunction'
+      \ },
+      \ }
 
 " plugin configuration
 
@@ -235,6 +262,7 @@ let g:coc_global_extensions = [
       \ 'coc-lists',
       \ 'coc-tsserver',
       \ 'coc-vetur',
+      \ 'coc-explorer',
       \ 'coc-yank']
 
 " Use tab for trigger completion with characters ahead and navigate.
@@ -259,7 +287,7 @@ endif
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " coc-yank
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
@@ -267,49 +295,12 @@ nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
 " you need install nerd fonts for show the icon
 nmap tt <Cmd>CocCommand explorer<CR>
 
-" typescript-vim vim-jsx-typescript
-" set filetypes as typescriptreact
-autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
-" dark red
-hi tsxTagName guifg=#E06C75
-hi tsxComponentName guifg=#E06C75
-hi tsxCloseComponentName guifg=#E06C75
-
-" orange
-hi tsxCloseString guifg=#F99575
-hi tsxCloseTag guifg=#F99575
-hi tsxCloseTagName guifg=#F99575
-hi tsxAttributeBraces guifg=#F99575
-hi tsxEqual guifg=#F99575
-
-" yellow
-hi tsxAttrib guifg=#F8BD7F cterm=italic
-
-" light-grey
-hi tsxTypeBraces guifg=#999999
-" dark-grey
-hi tsxTypes guifg=#666666
-
-hi ReactState guifg=#C176A7
-hi ReactProps guifg=#D19A66
-hi ApolloGraphQL guifg=#CB886B
-hi Events ctermfg=204 guifg=#56B6C2
-hi ReduxKeywords ctermfg=204 guifg=#C678DD
-hi ReduxHooksKeywords ctermfg=204 guifg=#C176A7
-hi WebBrowser ctermfg=204 guifg=#56B6C2
-hi ReactLifeCycleMethods ctermfg=204 guifg=#D19A66
-
-" vim-graphql
-autocmd BufNewFile,BufRead *.prisma setfiletype graphql
-
-" vim-javascript
-let g:javascript_plugin_jsdoc = 1
-let g:javascript_plugin_ngdoc = 1
-" let g:javascript_plugin_flow = 1
-
-" vim-code-runner
-nmap <silent><leader>r <plug>CodeRunner
-
 " vim autoformat
 let g:python3_host_prog="/Users/eyebrow/.pyenv/shims/python3"
-noremap <F3> :Autoformat<CR>
+map sf :Autoformat<CR>
+
+" vim-surround
+" type yskw' to wrap the word with '' or type cs'` to change 'word' to `word` S for visual mode
+
+" nvim-treesitter
+lua require('plugin-config/nvim-treesitter')
