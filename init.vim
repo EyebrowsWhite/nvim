@@ -184,6 +184,64 @@ map ti :+tabnext<CR>
 map tmn :-tabmove<CR>
 map tmi :+tabmove<CR>
 
+" terminal map
+map gt :terminal<CR>
+tnoremap <Esc> <C-\><C-n>
+
+
+" Compile function
+noremap <LEADER>r :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+  exec "w"
+  if &filetype == 'c'
+    set splitbelow
+    :sp
+    :res -5
+    term gcc -ansi -Wall % -o %< && time ./%<
+  elseif &filetype == 'cpp'
+    set splitbelow
+    exec "!g++ -std=c++11 % -Wall -o %<"
+    :sp
+    :res -15
+    :term ./%<
+  elseif &filetype == 'cs'
+    set splitbelow
+    silent! exec "!mcs %"
+    :sp
+    :res -5
+    :term mono %<.exe
+  elseif &filetype == 'java'
+    set splitbelow
+    :sp
+    :res -5
+    term javac % && time java %<
+  elseif &filetype == 'sh'
+    :!time bash %
+  elseif &filetype == 'python'
+    set splitbelow
+    :sp
+    :term python3 %
+  elseif &filetype == 'html'
+    silent! exec "!".g:mkdp_browser." % &"
+  elseif &filetype == 'markdown'
+    exec "InstantMarkdownPreview"
+  elseif &filetype == 'tex'
+    silent! exec "VimtexStop"
+    silent! exec "VimtexCompile"
+  elseif &filetype == 'dart'
+    exec "CocCommand flutter.run -d ".g:flutter_default_device." ".g:flutter_run_args
+    silent! exec "CocCommand flutter.dev.openDevLog"
+  elseif &filetype == 'javascript'
+    set splitbelow
+    :sp
+    :term export DEBUG="INFO,ERROR,WARNING"; node --trace-warnings .
+  elseif &filetype == 'go'
+    set splitbelow
+    :sp
+    :term go run .
+  endif
+endfunc
+
 
 " install plugins by vim-plug
 call plug#begin()
@@ -219,9 +277,9 @@ let g:vista_default_executive = 'coc'
 let g:vista_fzf_preview = ['right:50%']
 let g:vista#renderer#enable_icon = 1
 let g:vista#renderer#icons = {
-\   "function": "\uf794",
-\   "variable": "\uf71b",
-\  }
+      \   "function": "\uf794",
+      \   "variable": "\uf71b",
+      \  }
 function! NearestMethodOrFunction() abort
   return get(b:, 'vista_nearest_method_or_function', '')
 endfunction
@@ -231,13 +289,13 @@ autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 let g:lightline = {
       \ 'colorscheme': 'powerline',
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'readonly', 'filename', 'modified', 'method' ] ]
-      \ },
-      \ 'component_function': {
-      \   'method': 'NearestMethodOrFunction'
-      \ },
-      \ }
+        \   'left': [ [ 'mode', 'paste' ],
+        \             [ 'readonly', 'filename', 'modified', 'method' ] ]
+        \ },
+        \ 'component_function': {
+          \   'method': 'NearestMethodOrFunction'
+          \ },
+          \ }
 
 " plugin configuration
 
