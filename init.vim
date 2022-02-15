@@ -164,6 +164,15 @@ map se :set splitbelow<CR>:split<CR>
 map sn :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
 map si :set splitright<CR>:vsplit<CR>
 
+" Place the two screens up and down
+noremap sh <C-w>t<C-w>K
+" Place the two screens side by side
+noremap sv <C-w>t<C-w>H
+
+" Reverse screens
+noremap srh <C-w>b<C-w>K
+noremap srv <C-w>b<C-w>H
+
 " Resize splits with arrow keys
 map <up> :res +5<CR>
 map <down> :res -5<CR>
@@ -187,6 +196,10 @@ map tmi :+tabmove<CR>
 " terminal map
 map gt :terminal<CR>
 tnoremap <Esc> <C-\><C-n>
+
+" insert mode cursor movement
+" move to end of line
+inoremap <C-a> <ESC>A
 
 
 " Compile function
@@ -249,6 +262,7 @@ call plug#begin()
 Plug 'EdenEast/nightfox.nvim'
 Plug 'itchyny/lightline.vim'
 Plug 'mg979/vim-xtabline'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'liuchengxu/vista.vim'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -257,7 +271,14 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'github/copilot.vim'
 Plug 'Chiel92/vim-autoformat'
 Plug 'tpope/vim-surround'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+Plug 'neovim/nvim-lspconfig'
+
+" html and js something
+Plug 'mattn/emmet-vim'
+Plug 'chemzqm/vim-jsx-improve'
+
+Plug 'preservim/nerdcommenter'
 
 call plug#end()
 
@@ -317,12 +338,17 @@ endif
 let g:coc_global_extensions = [
       \ 'coc-clangd',
       \ 'coc-css',
+      \ 'coc-eslint',
+      \ 'coc-explorer',
       \ 'coc-html',
       \ 'coc-json',
       \ 'coc-lists',
+      \ 'coc-pairs',
+      \ 'coc-prettier',
+      \ 'coc-snippets',
       \ 'coc-tsserver',
       \ 'coc-vetur',
-      \ 'coc-explorer',
+      \ 'coc-yaml',
       \ 'coc-yank']
 
 " Use tab for trigger completion with characters ahead and navigate.
@@ -339,15 +365,27 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 " Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
+inoremap <silent><expr> <c-c> coc#refresh()
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
       \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" coc-list
+nnoremap <silent><nowait> <LEADER>d :CocList diagnostics<cr>
+
+" coc-snippets
+imap <C-l> <Plug>(coc-snippets-expand)
+vmap <C-e> <Plug>(coc-snippets-select)
+let g:coc_snippet_next = '<c-e>'
+let g:coc_snippet_prev = '<c-n>'
+imap <C-e> <Plug>(coc-snippets-expand-jump)
+
+" coc-eslint
+nmap <LEADER>s <Plug>(coc-codeaction)
+
+" coc-prettier
+vmap <LEADER>f <Plug>(coc-format-selected)
+nmap <LEADER>f <Plug>(coc-format)
 
 " coc-yank
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
@@ -364,3 +402,8 @@ map sf :Autoformat<CR>
 
 " nvim-treesitter
 lua require('plugin-config/nvim-treesitter')
+
+" emmet-vim
+let g:user_emmet_mode='a'
+let g:user_emmet_leader_key='<C-Z>'
+

@@ -1,5 +1,9 @@
 {
-  "yank.highlight.duration": 200,
+  "yank.highlight.duration": 300,
+  "vetur.ignoreProjectWarning": true,
+  "eslint.autoFixOnSave": false,
+  "prettier.singleQuote": false,
+  "prettier.trailingComma": "all",
   "explorer.width": 38,
   "explorer.quitOnOpen": true,
   "explorer.sources": [
@@ -13,7 +17,7 @@
     }
   ],
   "explorer.file.column.indent.indentLine": true,
-  "explorer.file.showHiddenFiles": true,
+  "explorer.file.showHiddenFiles": false,
   "explorer.icon.enableNerdfont": true,
   "explorer.git.showIgnored": true,
   "explorer.keyMappingMode": "none",
@@ -49,8 +53,8 @@
     "q": "quit",
     "X": "systemExecute",
     "gd": "listDrive",
-    "f": "search",
-    "F": "searchRecursive",
+    "F": "search",
+    "f": "searchRecursive",
     "B": "gotoSource:file",
     "b": "gotoSource:buffer",
     "[[": "sourcePrev",
