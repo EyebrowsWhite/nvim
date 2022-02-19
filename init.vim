@@ -94,13 +94,8 @@ let mapleader=" "
 map Q :q<CR>
 map S :w<CR>
 
-" Open the vimrc file anytime
-map <LEADER>rc :e ~/.vim/vimrc<CR>
-
 " Undo operations
 noremap l u
-" Undo in Insert mode
-inoremap <C-l> <C-u>
 
 " Insert Key
 noremap k i
@@ -210,7 +205,7 @@ func! CompileRunGcc()
     set splitbelow
     :sp
     :res -5
-    term gcc -ansi -Wall % -o %< && time ./%<
+    term gcc -ansi -Wall % -o %< && time ./%< && rm -f ./%<
   elseif &filetype == 'cpp'
     set splitbelow
     exec "!g++ -std=c++11 % -Wall -o %<"
