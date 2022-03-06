@@ -27,7 +27,7 @@ set autochdir
 " === Main code display
 " ===
 set number
-set relativenumber
+set norelativenumber
 set ruler
 set cursorline
 syntax enable
@@ -69,7 +69,7 @@ set showcmd
 set wildignore=log/**,node_modules/**,target/**,tmp/**,*.rbc
 set wildmenu
 " show a navigable menu for tab completion
-set wildmode=longest,list,full
+set wildmode=full
 
 " Searching options
 set hlsearch
@@ -120,8 +120,8 @@ noremap e j
 noremap i l
 
 " U/E keys for 10 times u/e (faster navigation)
-noremap U 10k
-noremap E 10j
+noremap U 5k
+noremap E 5j
 
 " Faster in-line navigation
 " noremap W 5w
@@ -254,7 +254,7 @@ endfunc
 " install plugins by vim-plug
 call plug#begin()
 
-Plug 'EdenEast/nightfox.nvim'
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'itchyny/lightline.vim'
 Plug 'mg979/vim-xtabline'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -269,6 +269,10 @@ Plug 'tpope/vim-surround'
 
 Plug 'neovim/nvim-lspconfig'
 
+" tree explorer
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-tree.lua'
+
 " html and js something
 Plug 'mattn/emmet-vim'
 Plug 'chemzqm/vim-jsx-improve'
@@ -281,7 +285,7 @@ call plug#end()
 if !has('gui_running')
   set t_Co=256
 endif
-colorscheme nightfox
+colorscheme tokyonight
 
 " xtabline
 
@@ -334,7 +338,6 @@ let g:coc_global_extensions = [
       \ 'coc-clangd',
       \ 'coc-css',
       \ 'coc-eslint',
-      \ 'coc-explorer',
       \ 'coc-html',
       \ 'coc-json',
       \ 'coc-lists',
@@ -384,9 +387,65 @@ nmap <LEADER>f <Plug>(coc-format)
 
 " coc-yank
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
-" coc-explorer
-" you need install nerd fonts for show the icon
-nmap tt <Cmd>CocCommand explorer<CR>
+
+" nvim tree
+let g:nvim_tree_indent_markers = 0 "0 by default, this option shows indent markers when folders are open
+let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
+let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
+let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
+let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
+let g:nvim_tree_icon_padding = ' ' "one space by default, used for rendering the space between the icon and the filename. Use with caution, it could break rendering if you set an empty string depending on your font.
+let g:nvim_tree_symlink_arrow = ' >> ' " defaults to ' ➛ '. used as a separator between symlinks' source and target.
+let g:nvim_tree_respect_buf_cwd = 1 "0 by default, will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
+let g:nvim_tree_create_in_closed_folder = 1 "0 by default, When creating files, sets the path of a file when cursor is on a closed folder to the parent folder when 0, and inside the folder when 1.
+let g:nvim_tree_special_files = { 'README.md': 1, 'Makefile': 1, 'MAKEFILE': 1 } " List of filenames that gets highlighted with NvimTreeSpecialFile
+let g:nvim_tree_show_icons = {
+    \ 'git': 1,
+    \ 'folders': 1,
+    \ 'files': 1,
+    \ 'folder_arrows': 1,
+    \ }
+"If 0, do not show the icons for one of 'git' 'folder' and 'files'
+"1 by default, notice that if 'files' is 1, it will only display
+"if nvim-web-devicons is installed and on your runtimepath.
+"if folder is 1, you can also tell folder_arrows 1 to show small arrows next to the folder icons.
+"but this will not work when you set indent_markers (because of UI conflict)
+
+" default will show icon by default if no icon is provided
+" default shows no icon by default
+let g:nvim_tree_icons = {
+    \ 'default': '',
+    \ 'symlink': '',
+    \ 'git': {
+    \   'unstaged': "✗",
+    \   'staged': "✓",
+    \   'unmerged': "",
+    \   'renamed': "➜",
+    \   'untracked': "★",
+    \   'deleted': "",
+    \   'ignored': "◌"
+    \   },
+    \ 'folder': {
+    \   'arrow_open': "",
+    \   'arrow_closed': "",
+    \   'default': "",
+    \   'open': "",
+    \   'empty': "",
+    \   'empty_open': "",
+    \   'symlink': "",
+    \   'symlink_open': "",
+    \   }
+    \ }
+
+nnoremap tt :NvimTreeToggle<CR>
+nnoremap tr :NvimTreeRefresh<CR>
+nnoremap tf :NvimTreeFindFile<CR>
+set termguicolors " this variable must be enabled for colors to be applied properly
+" a list of groups can be found at `:help nvim_tree_highlight`
+highlight NvimTreeFolderIcon guibg=blue
+
+lua require'nvim-tree'.setup()
 
 " vim autoformat
 let g:python3_host_prog="/Users/eyebrow/.pyenv/shims/python3"
