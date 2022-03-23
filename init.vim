@@ -1,5 +1,6 @@
 " ===
 " === Auto load for first time uses
+" === install vim-plug and plugins
 " ===
 if empty(glob($HOME.'/.config/nvim/autoload/plug.vim'))
   silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
@@ -15,7 +16,7 @@ filetype on
 filetype indent on
 filetype plugin on
 filetype plugin indent on
-set mouse=a
+" set mouse=a
 set encoding=utf-8
 
 " set clipboard=unnamed
@@ -73,7 +74,6 @@ set wildmode=full
 
 " Searching options
 set hlsearch
-exec "nohlsearch"
 set incsearch
 set ignorecase
 set smartcase
@@ -123,22 +123,19 @@ noremap i l
 noremap U 5k
 noremap E 5j
 
-" Faster in-line navigation
-" noremap W 5w
-" noremap B 5b
-
-" N key: go to the start of the line
-noremap N 0
 " I key: go to the end of the line
 noremap I $
 
 " set h as n for search next, same as H as N
 noremap h nzz
 noremap H Nzz
-noremap <LEADER><CR> :nohlsearch<CR>
 
 " set j as e for jump to end of word
 noremap j e
+" set L as H, N as M, M as L
+noremap L H
+noremap N M
+noremap M L
 
 " ===
 " === Window management
@@ -177,10 +174,10 @@ map <right> :vertical resize+5<CR>
 " ===
 " === Tab management
 " ===
-" change curruent window to new tab
-map te <C-w>T
 " Create a new tab with tu
 map tu :tabe<CR>
+" change curruent window to new tab
+map te <C-w>T
 " Move around tabs with tn and ti
 map tn :-tabnext<CR>
 map ti :+tabnext<CR>
@@ -189,13 +186,8 @@ map tmn :-tabmove<CR>
 map tmi :+tabmove<CR>
 
 " terminal map
-map gt :terminal<CR>
+map <LEADER>t :terminal<CR>
 tnoremap <Esc> <C-\><C-n>
-
-" insert mode cursor movement
-" move to end of line
-inoremap <C-a> <ESC>A
-
 
 " Compile function
 noremap <LEADER>r :call CompileRunGcc()<CR>
@@ -253,43 +245,60 @@ endfunc
 
 " install plugins by vim-plug
 call plug#begin()
-
+" vim porn
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'itchyny/lightline.vim'
 Plug 'mg979/vim-xtabline'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'liuchengxu/vista.vim'
+" search
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+" syntax parser
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'liuchengxu/vista.vim'
+" syntax complementation
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'github/copilot.vim'
-Plug 'Chiel92/vim-autoformat'
-Plug 'tpope/vim-surround'
-
-Plug 'neovim/nvim-lspconfig'
-
 " tree explorer
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kyazdani42/nvim-tree.lua'
+" git
+Plug 'kdheepak/lazygit.nvim'
+
+" shortcut
+Plug 'tpope/vim-surround'
+" type yskw' to wrap the word with '' or type cs'` to change 'word' to `word` S for visual mode
+
+Plug 'neovim/nvim-lspconfig'
 
 " html and js something
 Plug 'mattn/emmet-vim'
 Plug 'chemzqm/vim-jsx-improve'
 
 Plug 'preservim/nerdcommenter'
-
 call plug#end()
 
-" theme configuration
+" theme
 if !has('gui_running')
   set t_Co=256
 endif
 colorscheme tokyonight
+" lightline
+let g:lightline = {
+      \ 'colorscheme': 'powerline',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'readonly', 'filename', 'modified', 'method' ] ]
+      \ },
+      \ 'component_function': {
+      \   'method': 'NearestMethodOrFunction'
+      \ },
+      \ }
 
-" xtabline
+" nvim-treesitter
+lua require('plugin-config/nvim-treesitter')
 
-" lightline and vista
+" vista
 noremap <LEADER>v :Vista!!<CR>
 noremap <c-t> :silent! Vista finder coc<CR>
 let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
@@ -306,20 +315,8 @@ endfunction
 set statusline+=%{NearestMethodOrFunction()}
 autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 
-let g:lightline = {
-      \ 'colorscheme': 'powerline',
-      \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ],
-        \             [ 'readonly', 'filename', 'modified', 'method' ] ]
-        \ },
-        \ 'component_function': {
-          \   'method': 'NearestMethodOrFunction'
-          \ },
-          \ }
 
-" plugin configuration
-
-" coc.nvim
+" ============= coc.nvim ========== start ========
 " TextEdit might fail if hidden is not set.
 set hidden
 set updatetime=100
@@ -388,6 +385,8 @@ nmap <LEADER>f <Plug>(coc-format)
 " coc-yank
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
 
+" ============= coc.nvim ======= end ===========
+
 " nvim tree
 let g:nvim_tree_indent_markers = 0 "0 by default, this option shows indent markers when folders are open
 let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
@@ -447,17 +446,15 @@ highlight NvimTreeFolderIcon guibg=blue
 
 lua require'nvim-tree'.setup()
 
-" vim autoformat
-let g:python3_host_prog="/Users/eyebrow/.pyenv/shims/python3"
-map sf :Autoformat<CR>
-
-" vim-surround
-" type yskw' to wrap the word with '' or type cs'` to change 'word' to `word` S for visual mode
-
-" nvim-treesitter
-lua require('plugin-config/nvim-treesitter')
+" lazygit
+let g:lazygit_floating_window_winblend = 0 " transparency of floating window
+let g:lazygit_floating_window_scaling_factor = 0.9 " scaling factor for floating window
+let g:lazygit_floating_window_corner_chars = ['╭', '╮', '╰', '╯'] " customize lazygit popup window corner characters
+let g:lazygit_floating_window_use_plenary = 0 " use plenary.nvim to manage floating window if available
+let g:lazygit_use_neovim_remote = 1 " fallback to 0 if neovim-remote is not installed
+" setup mapping to call :LazyGit
+nnoremap <silent> <leader>g :LazyGit<CR>
 
 " emmet-vim
 let g:user_emmet_mode='a'
-let g:user_emmet_leader_key='<C-Z>'
 
