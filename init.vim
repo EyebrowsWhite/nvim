@@ -123,6 +123,9 @@ noremap i l
 noremap U 5k
 noremap E 5j
 
+nnoremap <c-e> <c-d>
+nnoremap <c-d> <c-e>
+
 " I key: go to the end of the line
 noremap I $
 
@@ -141,7 +144,6 @@ noremap M L
 " === Window management
 " ===
 " Use <space> + new arrow keys for moving the cursor around windows
-map <LEADER>w <C-w>w
 map <LEADER>u <C-w>k
 map <LEADER>e <C-w>j
 map <LEADER>n <C-w>h
@@ -268,14 +270,13 @@ Plug 'kdheepak/lazygit.nvim'
 " shortcut
 Plug 'tpope/vim-surround'
 " type yskw' to wrap the word with '' or type cs'` to change 'word' to `word` S for visual mode
+Plug 'preservim/nerdcommenter'
 
 Plug 'neovim/nvim-lspconfig'
 
 " html and js something
 Plug 'mattn/emmet-vim'
 Plug 'chemzqm/vim-jsx-improve'
-
-Plug 'preservim/nerdcommenter'
 call plug#end()
 
 " theme
@@ -454,6 +455,26 @@ let g:lazygit_floating_window_use_plenary = 0 " use plenary.nvim to manage float
 let g:lazygit_use_neovim_remote = 1 " fallback to 0 if neovim-remote is not installed
 " setup mapping to call :LazyGit
 nnoremap <silent> <leader>g :LazyGit<CR>
+
+" nerdcommenter
+" Create default mappings
+let g:NERDCreateDefaultMappings = 1
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+" Set a language to use its alternate delimiters by default
+let g:NERDAltDelims_java = 1
+" Add your own custom formats or override the defaults
+let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+" Enable NERDCommenterToggle to check all selected lines is commented or not 
+let g:NERDToggleCheckAllLines = 1
 
 " emmet-vim
 let g:user_emmet_mode='a'
