@@ -1,7 +1,3 @@
 {
-  "yank.highlight.duration": 300,
-  "vetur.ignoreProjectWarning": true,
-  "eslint.autoFixOnSave": false,
-  "prettier.singleQuote": false,
-  "prettier.trailingComma": "all"
+  "yank.highlight.duration": 300
 }

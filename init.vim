@@ -16,10 +16,9 @@ filetype on
 filetype indent on
 filetype plugin on
 filetype plugin indent on
-" set mouse=a
 set encoding=utf-8
+" set mouse=a
 
-" set clipboard=unnamed
 " Prevent incorrect background rendering
 let &t_ut=''
 set autochdir
@@ -37,7 +36,6 @@ syntax on
 " ===
 " === Editor behavior
 " ===
-
 " Better tab
 set expandtab
 set tabstop=2
@@ -47,13 +45,11 @@ set list
 set listchars=tab:▸\ ,trail:▫
 set scrolloff=5
 
-
 " Better backspace
 set backspace=indent,eol,start
-
 set foldmethod=indent
 set foldlevel=99
-
+" Better cursor
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_SR = "\<Esc>]50;CursorShape=2\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
@@ -65,13 +61,10 @@ set laststatus=2
 set noshowmode
 set showcmd
 " set formatoptions-=tc
-
 " Show command autocomplete
 set wildignore=log/**,node_modules/**,target/**,tmp/**,*.rbc
 set wildmenu
-" show a navigable menu for tab completion
 set wildmode=full
-
 " Searching options
 set hlsearch
 set incsearch
@@ -86,28 +79,22 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " ===
 " === Basic Mappings
 " ===
-
 " Set <LEADER> as <SPACE>
 let mapleader=" "
-
 " Save & quit
 map Q :q<CR>
 map S :w<CR>
-
 " Undo operations
 noremap l u
-
 " Insert Key
 noremap k i
 noremap K I
-
 " Copy to system clipboard
 vnoremap Y "+y
 
 " ===
 " === Cursor Movement
 " ===
-"
 " New cursor movement (the default arrow keys are used for resizing windows)
 "     ^
 "     u
@@ -118,24 +105,20 @@ noremap u k
 noremap n h
 noremap e j
 noremap i l
-
-" U/E keys for 10 times u/e (faster navigation)
+" U/E keys for 5 times u/e (faster navigation)
 noremap U 5k
 noremap E 5j
-
+"c-e for ctrl down; c-d for scroll down
 nnoremap <c-e> <c-d>
 nnoremap <c-d> <c-e>
-
 " I key: go to the end of the line
-noremap I $
-
+"noremap I $
 " set h as n for search next, same as H as N
 noremap h nzz
 noremap H Nzz
-
 " set j as e for jump to end of word
 noremap j e
-" set L as H, N as M, M as L
+" set L as High, N as Middle, M as Low
 noremap L H
 noremap N M
 noremap M L
@@ -148,25 +131,20 @@ map <LEADER>u <C-w>k
 map <LEADER>e <C-w>j
 map <LEADER>n <C-w>h
 map <LEADER>i <C-w>l
-
 " Disabling the default s key
 noremap s <nop>
-
 " split the screens to up (horizontal), down (horizontal), left (vertical), right (vertical)
 map su :set nosplitbelow<CR>:split<CR>:set splitbelow<CR>
 map se :set splitbelow<CR>:split<CR>
 map sn :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
 map si :set splitright<CR>:vsplit<CR>
-
 " Place the two screens up and down
 noremap sh <C-w>t<C-w>K
 " Place the two screens side by side
 noremap sv <C-w>t<C-w>H
-
 " Reverse screens
 noremap srh <C-w>b<C-w>K
 noremap srv <C-w>b<C-w>H
-
 " Resize splits with arrow keys
 map <up> :res +5<CR>
 map <down> :res -5<CR>
@@ -187,11 +165,15 @@ map ti :+tabnext<CR>
 map tmn :-tabmove<CR>
 map tmi :+tabmove<CR>
 
-" terminal map
+" ===
+" === Terminal in vim
+" ===
 map <LEADER>t :terminal<CR>
 tnoremap <Esc> <C-\><C-n>
 
-" Compile function
+" ===
+" === Compile function
+" ===
 noremap <LEADER>r :call CompileRunGcc()<CR>
 func! CompileRunGcc()
   exec "w"
@@ -244,7 +226,6 @@ func! CompileRunGcc()
   endif
 endfunc
 
-
 " install plugins by vim-plug
 call plug#begin()
 " vim porn
@@ -258,25 +239,21 @@ Plug 'junegunn/fzf.vim'
 " syntax parser
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'liuchengxu/vista.vim'
-" syntax complementation
+" syntax auto completion and lint
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'github/copilot.vim'
+Plug 'neovim/nvim-lspconfig'
+" lint
+Plug 'dense-analysis/ale'
 " tree explorer
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kyazdani42/nvim-tree.lua'
 " git
 Plug 'kdheepak/lazygit.nvim'
-
 " shortcut
 Plug 'tpope/vim-surround'
 " type yskw' to wrap the word with '' or type cs'` to change 'word' to `word` S for visual mode
 Plug 'preservim/nerdcommenter'
-
-Plug 'neovim/nvim-lspconfig'
-
-" html and js something
-Plug 'mattn/emmet-vim'
-Plug 'chemzqm/vim-jsx-improve'
 call plug#end()
 
 " theme
@@ -333,17 +310,9 @@ else
 endif
 " coc plugins
 let g:coc_global_extensions = [
-      \ 'coc-clangd',
-      \ 'coc-css',
-      \ 'coc-eslint',
-      \ 'coc-html',
-      \ 'coc-json',
       \ 'coc-lists',
       \ 'coc-pairs',
-      \ 'coc-prettier',
       \ 'coc-snippets',
-      \ 'coc-tsserver',
-      \ 'coc-vetur',
       \ 'coc-yaml',
       \ 'coc-yank']
 
@@ -375,13 +344,6 @@ vmap <C-e> <Plug>(coc-snippets-select)
 let g:coc_snippet_next = '<c-e>'
 let g:coc_snippet_prev = '<c-n>'
 imap <C-e> <Plug>(coc-snippets-expand-jump)
-
-" coc-eslint
-nmap <LEADER>s <Plug>(coc-codeaction)
-
-" coc-prettier
-vmap <LEADER>f <Plug>(coc-format-selected)
-nmap <LEADER>f <Plug>(coc-format)
 
 " coc-yank
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
@@ -454,7 +416,7 @@ let g:lazygit_floating_window_corner_chars = ['╭', '╮', '╰', '╯'] " cust
 let g:lazygit_floating_window_use_plenary = 0 " use plenary.nvim to manage floating window if available
 let g:lazygit_use_neovim_remote = 1 " fallback to 0 if neovim-remote is not installed
 " setup mapping to call :LazyGit
-nnoremap <silent> <leader>g :LazyGit<CR>
+nnoremap <silent> tl :LazyGit<CR>
 
 " nerdcommenter
 " Create default mappings
@@ -476,6 +438,27 @@ let g:NERDTrimTrailingWhitespace = 1
 " Enable NERDCommenterToggle to check all selected lines is commented or not 
 let g:NERDToggleCheckAllLines = 1
 
-" emmet-vim
-let g:user_emmet_mode='a'
+" lsp server config
+lua << EOF
+require'lspconfig'.cssls.setup{}
+require'lspconfig'.eslint.setup{}
+require'lspconfig'.html.setup{}
+require'lspconfig'.jsonls.setup{}
+require'lspconfig'.cssmodules_ls.setup{}
+require'lspconfig'.dockerls.setup{}
+require'lspconfig'.grammarly.setup{}
+require'lspconfig'.graphql.setup{}
+require'lspconfig'.tsserver.setup{}
+require'lspconfig'.vimls.setup{}
+require'lspconfig'.vuels.setup{}
+require'lspconfig'.pyright.setup{}
+EOF
 
+" Asynchronous Lint Engine
+let b:ale_fixers = ['prettier', 'eslint']
+let g:ale_fixers = {
+\   '*': ['trim_whitespace'],
+\   'javascript': ['eslint'],
+\}
+" Set this variable to 1 to fix files when you save them.
+let g:ale_fix_on_save = 1
