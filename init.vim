@@ -435,7 +435,7 @@ let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
 let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
-" Enable NERDCommenterToggle to check all selected lines is commented or not 
+" Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 
 " lsp server config
@@ -455,10 +455,11 @@ require'lspconfig'.pyright.setup{}
 EOF
 
 " Asynchronous Lint Engine
-let b:ale_fixers = ['prettier', 'eslint']
 let g:ale_fixers = {
 \   '*': ['trim_whitespace'],
-\   'javascript': ['eslint'],
+\   'javascript': ['prettier', 'eslint'],
+\   'css': ['prettier', 'eslint'],
+\   'json': ['prettier', 'eslint'],
 \}
 " Set this variable to 1 to fix files when you save them.
 let g:ale_fix_on_save = 1
